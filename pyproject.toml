@@ -1,7 +1,7 @@
 [project]
 name = "md2svg-mcp"
-version = "0.1.0"
-description = "A tool convert markdown to svg"
+version = "0.1.6"
+description = "A MCP server that converts Markdown text to SVG images."
 readme = "README.md"
 authors = [{ name = "Yossi-lee" }]
 keywords = ["mcp", "markdown", "svg"]
@@ -10,7 +10,8 @@ dependencies = ["fastmcp"]
 
 
 [project.scripts]
-your-mcp-service = "md2svg:main"
+md2svg-mcp = "md2svg_mcp.md2svg_mcp:main"
+
 
 [project.urls]
 Homepage = "https://github.com/yossi-lee/md2svg-mcp"

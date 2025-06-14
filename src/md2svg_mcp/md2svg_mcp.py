@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
 import textwrap
 from xml.sax.saxutils import escape
 import re
+from fastmcp import FastMCP
+from typing import Annotated, List, Tuple
+
 
 def parse_markdown(md_text):
     lines = md_text.split('\n')
@@ -52,6 +56,7 @@ def parse_markdown(md_text):
         blocks.append(("table", table_lines))
 
     return blocks
+
 
 def draw_table(table_lines, x, y, width, font_family, font_size, text_color, header_color, border_color):
     svg = []
@@ -106,17 +111,25 @@ def draw_table(table_lines, x, y, width, font_family, font_size, text_color, hea
     return svg, y + table_height + 20
 
 
-
-
-from fastmcp import FastMCP
-
-
-mcp = FastMCP(name="MyMCPService")
-
+mcp = FastMCP(name="Md2svg-mcp")
 
 @mcp.tool()
-def markdown_to_svg(md_text, output_file="output.svg", width=720, padding=50):
+def markdown_to_svg(
+    md_text: Annotated[str, "Markdown文本内容"],
+    output_file_path: Annotated[str, "输出SVG文件路径"] = "output.svg",
+    width: Annotated[int, "SVG图像宽度"] = 720,
+    padding: Annotated[int, "SVG图像内边距"] = 50
+) -> Annotated[str, "生成的SVG文件路径"]:
     """mardown转换为svg图片"""
+    # 如果需要，尝试将输入字符串解码为UTF-8（处理可能的GBK编码字符串）
+    if isinstance(md_text, str):
+        try:
+            md_text.encode('utf-8')
+        except UnicodeEncodeError:
+            print("Warning: Input string is not valid UTF-8. Trying to decode with GBK...")
+            # 如果字符串包含无法用UTF-8编码表示的字符，尝试用GBK解码再重新编码为UTF-8
+            md_text = md_text.encode('gbk', errors='ignore').decode('gbk', errors='ignore')
+    
     blocks = parse_markdown(md_text)
 
     font_family = "Helvetica, sans-serif"
@@ -211,10 +224,15 @@ def markdown_to_svg(md_text, output_file="output.svg", width=720, padding=50):
   {svg_body}
 </svg>'''
 
-    with open(output_file, "w", encoding="utf-8") as f:
+    with open(output_file_path, "w", encoding="utf-8") as f:
         f.write(svg)
 
-    print(f"✅ SVG 文件生成成功: {output_file}")
+    print(f"SVG 文件生成成功: {output_file_path}")
+
+
+def main():
+    mcp.run()
+
 
 if __name__ == "__main__":
-    mcp.run()
+    main()
