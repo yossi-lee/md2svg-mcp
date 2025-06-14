@@ -1,6 +1,6 @@
 [project]
 name = "md2svg-mcp"
-version = "0.1.6"
+version = "0.1.8"
 description = "A MCP server that converts Markdown text to SVG images."
 readme = "README.md"
 authors = [{ name = "Yossi-lee" }]
